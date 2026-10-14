@@ -1,0 +1,4 @@
+Flask
+scapy
+gunicorn
+google-genai
