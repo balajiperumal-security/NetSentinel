@@ -1,38 +1,20 @@
-def explain_risk(risk, port, count):
-    print("\n" + "=" * 55)
-    print("          NETSENTINEL RESPONSE ENGINE")
-    print("=" * 55)
-
-    print(f"\nRisk Level : {risk}")
-    print(f"Port       : {port}")
-    print(f"Events     : {count}")
-
-    if risk == "HIGH":
-        print("\nExplanation:")
-        print("High traffic activity was detected on this port.")
-
-        print("\nRecommended Action:")
-        print("Review the source and destination before taking action.")
-        print("Use approved firewall rules if the activity is confirmed unwanted.")
-
-    elif risk == "MEDIUM":
-        print("\nExplanation:")
-        print("Repeated network activity was detected.")
-
-        print("\nRecommended Action:")
-        print("Continue monitoring and investigate the source.")
-
-    else:
-        print("\nExplanation:")
-        print("The observed traffic is within the current monitoring threshold.")
-
-        print("\nRecommended Action:")
-        print("Continue monitoring normally.")
-
-    print("\nVerification:")
-    print("Monitor subsequent traffic to confirm whether the activity continues.")
-    print("=" * 55)
-
-
-# Demo using the current low-risk result
-explain_risk("LOW", "80", 4)
+"""Safe, advisory-only response recommendations. No automatic blocking/actions."""
+def recommend_response(event):
+    level = event.get('risk_level', 'Low')
+    if level == 'High':
+        return [
+            'Validate the alert against trusted logs and asset context.',
+            'If this is an authorized environment, notify the security owner and follow the incident runbook.',
+            'Consider isolating the affected test host only after approval and impact review.',
+            'Preserve relevant logs and record the investigation timeline.'
+        ]
+    if level == 'Medium':
+        return [
+            'Review related authentication and network logs.',
+            'Confirm whether the activity matches an approved test or expected application behavior.',
+            'Escalate if the indicator repeats or affects a sensitive asset.'
+        ]
+    return [
+        'Continue routine monitoring.',
+        'Keep the event available for correlation if similar activity appears later.'
+    ]
